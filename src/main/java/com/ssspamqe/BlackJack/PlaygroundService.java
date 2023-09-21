@@ -70,9 +70,25 @@ public class PlaygroundService {
 
 
     int getPointsOfList(ArrayList<String> deck){
-        AtomicInteger res = new AtomicInteger();
-        deck.forEach(i-> res.addAndGet(getPoints(i))); //Whats the "AtomicInteger" is and why i should use it here??????????s
-        return res.get();
+        int res =0;
+        int ACount = (int) deck.stream().filter(i -> i.equals("A")).count();
+
+        for(var i : deck)
+            if(!i.equals("A"))
+                res+=getPoints(i);
+
+
+        if(ACount==0)
+            return res;
+        //ДО ПОСТКОММУНАРКИ 15 МИНУУУУУУт
+
+        if(res + 10 + ACount <= 21)
+            return res + 10 + ACount;
+        else
+            return res+ACount;
+
+        //5 МИНУТ ААААААААААААААААААААААААААААААААААА
+
     }
 
     int getPoints(String s){
