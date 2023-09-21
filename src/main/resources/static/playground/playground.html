@@ -12,9 +12,11 @@
 
 
 <div class="column">
-    <button>start game</button>
-    <h1 style="text-align: center">DEALER CARDS:</h1>
-    <h1 style="text-align: center"> no cards, start the game </h1>
+    <button id ="startGame_btn" onclick="startGame()">start game</button>
+    <h1 style="text-align: center">DEALER CARDS: ???</h1>
+    <h1 style="text-align: center" id="playerCards_header"> no cards, start the game </h1>
+    <button id = "takeCard_btn" disabled onclick="takeCard()">take cards</button>
+    <button id = "finishGame_btn" disabled onclick="finishGame()">finish game</button>
 </div>
 
 <div class="column">
@@ -31,6 +33,6 @@
 
 <div class = ></div>
 
-<script src="script.js"></script>
+<script src="playgroundScript.js"></script>
 </body>
 </html>
