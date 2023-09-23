@@ -1,10 +1,9 @@
-package com.ssspamqe.BlackJack;
+package com.ssspamqe.BlackJack.playground;
 
 import org.springframework.stereotype.Service;
 
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class PlaygroundService {
@@ -80,7 +79,7 @@ public class PlaygroundService {
 
         if(ACount==0)
             return res;
-        //ДО ПОСТКОММУНАРКИ 15 МИНУУУУУУт
+        //ДО ПОСТКОММУНАРКИ 15 МИНУУУУУУТ
 
         if(res + 10 + ACount <= 21)
             return res + 10 + ACount;
@@ -88,7 +87,7 @@ public class PlaygroundService {
             return res+ACount;
 
         //5 МИНУТ ААААААААААААААААААААААААААААААААААА
-
+        //AAAAAAAAAAAAAAAAAAAA КРУТААААААААААААААААААААААААА 45 минут на репите уже (всем спокойной ночи)
     }
 
     int getPoints(String s){

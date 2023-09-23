@@ -1,7 +1,7 @@
-playerCards_header = document.getElementById("playerCards_header")
-takeCard_btn = document.getElementById("takeCard_btn")
-finishGame_btn = document.getElementById("finishGame_btn")
-startGame_btn = document.getElementById("startGame_btn")
+let playerCards_header = document.getElementById("playerCards_header")
+let username_label = document.getElementById("username_label")
+
+username_label.textContent = sessionStorage.getItem('username')
 
 function startGame(){
     fetch("http://localhost:8080/blackJack/playground/start",{

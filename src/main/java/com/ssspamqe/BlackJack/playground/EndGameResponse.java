@@ -1,4 +1,4 @@
-package com.ssspamqe.BlackJack;
+package com.ssspamqe.BlackJack.playground;
 
 import java.util.ArrayList;
 
