@@ -7,14 +7,11 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class ChatController {
 
-    @MessageMapping
-    @SendTo("/output")
+    @MessageMapping("/chat")
+    @SendTo("/output/chat")//full path
     public Message sendMessage(Message message){
-
         System.out.println(message);
-
         return message;
-
     }
 
 }

@@ -5,10 +5,10 @@
         BBBlack Jack playground
     </title>
     <link rel = 'stylesheet' href="style.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
 </head>
 
 <body>
-
 
 
 <div class="column">
@@ -20,11 +20,11 @@
     <button id = "finishGame_btn" disabled onclick="finishGame()">finish game</button>
 </div>
 
+
+
 <div class="column">
     <h1>Online players:</h1>
-    <ul style="list-style: none">
-        <li>Player 1</li>
-        <li>Player 2</li>
+    <ul style="list-style: none" id = "onlinePlayers_list">
     </ul>
     <h1>Chat</h1>
     <p/><label>Type your message: </label> <input type="text" id ="login_nameInput">

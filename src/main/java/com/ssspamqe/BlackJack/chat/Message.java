@@ -1,14 +1,13 @@
 package com.ssspamqe.BlackJack.chat;
 
 
-
 public class Message {
 
     private String sender;
     private String content;
-    private Role senderRole;
+    private String senderRole;
 
-    public Message(String sender, String content, Role senderRole) {
+    public Message(String sender, String content, String senderRole) {
         this.sender = sender;
         this.content = content;
         this.senderRole = senderRole;
@@ -35,11 +34,11 @@ public class Message {
         this.content = content;
     }
 
-    public Role getSenderRole() {
+    public String getSenderRole() {
         return senderRole;
     }
 
-    public void setSenderRole(Role senderRole) {
+    public void setSenderRole(String senderRole) {
         this.senderRole = senderRole;
     }
 }

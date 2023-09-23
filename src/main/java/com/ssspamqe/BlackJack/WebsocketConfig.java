@@ -1,4 +1,4 @@
-package com.ssspamqe.BlackJack.chat;
+package com.ssspamqe.BlackJack;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -8,12 +8,12 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class ChatConfig implements WebSocketMessageBrokerConfigurer {
+public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
-        registry.addEndpoint("/blackJack/chat");
+        registry.addEndpoint("/blackJack");
     }
 
     @Override
