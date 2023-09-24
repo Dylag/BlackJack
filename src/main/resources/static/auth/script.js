@@ -33,6 +33,7 @@ function login(){
         .then(json =>{
             if(json.content === 'ok') {
                 sessionStorage.setItem("username", login_nameInput.value)
+                sessionStorage.setItem('role','player')
                 window.location.href = "../playground/playground.html"
             }
             else
@@ -65,6 +66,7 @@ function registration(){
         .then(json => {
             if(json.content==='ok') {
                 sessionStorage.setItem("username", reg_nameInput.value)
+                sessionStorage.setItem('role','player')
                 window.location.href = "../playground/playground.html"
             }
             else
