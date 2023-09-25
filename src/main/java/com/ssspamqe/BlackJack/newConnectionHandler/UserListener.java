@@ -1,19 +1,16 @@
 package com.ssspamqe.BlackJack.newConnectionHandler;
 
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Component
 public class UserListener {
 
-    private final Map<String,String> users = new HashMap<>();
+    private final Map<UUID,List<String>> onlineUsers = new HashMap<>();
     @EventListener
     public void handleSessionSubscribeEvent(SessionSubscribeEvent event){
 //        System.out.println(headers);
@@ -22,21 +19,24 @@ public class UserListener {
 //        System.out.println(matcher.matches());
 
         //YEAH I KNOW ABOUT REGEXS BUT THEY ARE NOT WORKING IDK WHY =(
-        List<String> connectionData = parseConnectionData(event.getMessage().getHeaders().get("nativeHeaders").toString());
-        users.put(connectionData.get(0),connectionData.get(1));
-        System.out.println(users.size());
+        //TODO use regex
+        List<String> connectionData = parseConnectionData(event.getMessage().getHeaders().toString());
+        onlineUsers.put(UUID.fromString(connectionData.get(0)), connectionData.subList(1,3));
+        System.out.println(onlineUsers.size());
+
+
     }
 
     @EventListener
     public void handleSessionUnsubscribeEvent(SessionUnsubscribeEvent event){
-        System.out.println(event.getMessage().getHeaders().get("nativeHeaders").toString());
-//        List<String> connectionData = parseConnectionData(event.getMessage().getHeaders().get("nativeHeaders").toString());
-//        users.remove(connectionData.get(0));
-//        System.out.println(users.size());
+        //System.out.println(event.getMessage().getHeaders().get("nativeHeaders").toString());
+
+        onlineUsers.remove(UUID.fromString(parseSessionUUID(event.getMessage().getHeaders().toString())));
+        System.out.println(onlineUsers.size());
     }
 
     public void printUsers(){
-        System.out.println(users);
+        System.out.println(onlineUsers);
     }
 
     public List<String> parseConnectionData(String s){
@@ -52,8 +52,21 @@ public class UserListener {
             role+=s.charAt(i);
             i++;
         }
-
-        return new ArrayList<String>(List.of(username,role));
+        return new ArrayList<String>(List.of(parseSessionUUID(s),username,role));
     }
+
+    public String parseSessionUUID(String s){
+        int i = s.indexOf("simpSessionId=") + "simpSessionId=".length();
+
+
+        String uuid = "";
+        while(s.charAt(i)!=',' && s.charAt(i)!='}'){
+            uuid+=s.charAt(i);
+            i++;
+        }
+        System.out.println(uuid);
+        return uuid;
+    }
+
 
 }
