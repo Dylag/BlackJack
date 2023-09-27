@@ -1,16 +1,28 @@
 package com.ssspamqe.BlackJack.newConnectionHandler;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
-public class UserListener {
+public class SubscribeListener {
 
     private final Map<UUID,List<String>> onlineUsers = new HashMap<>();
+
+    private ConnectionController connectionController;
+
+    SubscribeListener(ConnectionController connectionController){
+        this.connectionController = connectionController;
+    }
+
     @EventListener
     public void handleSessionSubscribeEvent(SessionSubscribeEvent event){
 //        System.out.println(headers);
@@ -21,22 +33,40 @@ public class UserListener {
         //YEAH I KNOW ABOUT REGEXS BUT THEY ARE NOT WORKING IDK WHY =(
         //TODO use regex
         List<String> connectionData = parseConnectionData(event.getMessage().getHeaders().toString());
-        onlineUsers.put(UUID.fromString(connectionData.get(0)), connectionData.subList(1,3));
-        System.out.println(onlineUsers.size());
-
-
+        if(!onlineUsers.containsKey(UUID.fromString(connectionData.get(0)))){
+            onlineUsers.put(UUID.fromString(connectionData.get(0)), connectionData.subList(1,3));
+            sendOnlineUsers();
+        }
     }
 
     @EventListener
     public void handleSessionUnsubscribeEvent(SessionUnsubscribeEvent event){
         //System.out.println(event.getMessage().getHeaders().get("nativeHeaders").toString());
+        UUID sessionUUID = UUID.fromString(parseSessionUUID(event.getMessage().getHeaders().toString()));
 
-        onlineUsers.remove(UUID.fromString(parseSessionUUID(event.getMessage().getHeaders().toString())));
-        System.out.println(onlineUsers.size());
+        if(onlineUsers.containsKey(sessionUUID)) {
+            onlineUsers.remove(UUID.fromString(parseSessionUUID(event.getMessage().getHeaders().toString())));
+            sendOnlineUsers();
+        }
     }
 
-    public void printUsers(){
-        System.out.println(onlineUsers);
+    //TODO change this shit, perhaps it will be better to delete onlineUsers HashMap?
+    public void sendOnlineUsers(){
+        System.out.println("sending online info from Listener class");
+        connectionController.publishConnections(onlineUsers.values().stream()
+                .map(ConnectionInfo::new).collect(Collectors.toList()));
+    }
+
+    public void send(){
+        ArrayList<MessageChannel> channels = new ArrayList<MessageChannel>();
+        SimpMessagingTemplate messagingTemplate = new SimpMessagingTemplate(new MessageChannel() {
+            @Override
+            public boolean send(Message<?> message, long timeout) {
+                return false;
+            }
+        });
+
+        messagingTemplate.convertAndSend("/output/connections",onlineUsers);
     }
 
     public List<String> parseConnectionData(String s){
@@ -64,9 +94,6 @@ public class UserListener {
             uuid+=s.charAt(i);
             i++;
         }
-        System.out.println(uuid);
         return uuid;
     }
-
-
 }

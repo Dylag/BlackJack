@@ -1,6 +1,8 @@
 let playerCards_header = document.getElementById("playerCards_header")
 let username_label = document.getElementById("username_label")
 let onlinePlayer_list = document.getElementById('onlinePlayers_list')
+let messageInput = document.getElementById('messageInput')
+let chat_list = document.getElementById('chat_list')
 
 username_label.textContent = sessionStorage.getItem('username')
 
@@ -10,38 +12,57 @@ const stompClient = new StompJs.Client({
 });
 stompClient.onConnect = (frame) =>{
     console.log(`connected: ${frame}`)
-    // stompClient.subscribe('/output/connections',newConnectionObject=>{
-    //     let obj = JSON.parse(newConnectionObject.body)
-    //     console.log("Got new connection: "+obj.body)
-    //
-    //
-    //     let newUserItem = document.createElement('li')
-    //     newUserItem.textContent = `${obj.username}[${obj.role}]`
-    //     onlinePlayer_list.appendChild(newUserItem)
-    // },{
-    //     simpSessionAttributes:JSON.stringify({
-    //         username:sessionStorage.getItem('username')
-    //     }) l
-    //
-    // })
-    stompClient.subscribe("/output/chat", newMessage=>{
-        let obj = JSON.parse(newMessage.body)
-        console.log("got new message: "+obj.body)
+
+
+    stompClient.subscribe('/output/connections',newConnectionObject=>{
+
+        console.log("got list")
+        alert("got list")
+        // let obj = JSON.parse(newConnectionObject.body)
+        // console.log("Got new connection list: "+obj.body)
+        //
+        // let newUserItem = document.createElement('li')
+        // newUserItem.textContent = `${obj.username}[${obj.role}]`
+        // onlinePlayer_list.appendChild(newUserItem)
     },{
         simpSessionAttributes:JSON.stringify({
             username:sessionStorage.getItem('username'),
             role:sessionStorage.getItem('role')
         })
     })
+
+
+    stompClient.subscribe("/output/chat", newMessage=>{
+        let obj = JSON.parse(newMessage.body)
+
+        let senderName = obj.sender
+        let role = obj.senderRole
+        let content = obj.content
+
+        let newLi = document.createElement('li')
+        newLi.textContent = `${senderName}[${role}]: ${content}`
+
+        chat_list.appendChild(newLi)
+
+
+
+    },{
+        simpSessionAttributes:JSON.stringify({
+            username:sessionStorage.getItem('username'),
+            role:sessionStorage.getItem('role')
+        })
+    })
+
+
+
+
     // stompClient.publish({
     //     destination:'/input/newConnection',
-    //     body: JSON.stringify({
+    //     body: JSON.stringify([{
     //         username:sessionStorage.getItem('username'),
-    //         role:'player'
-    //     })
+    //         role:sessionStorage.getItem('role')
+    //     }])
     // })
-
-    console.log('sent info about connection')
 }
 window.onbeforeunload = ()=>{
     stompClient.unsubscribe(0)
@@ -50,6 +71,17 @@ window.onbeforeunload = ()=>{
 
 stompClient.activate()
 
+
+function sendMessage(){
+    stompClient.publish({
+        destination:"/input/chat",
+        body: JSON.stringify({
+            sender:sessionStorage.getItem('username'),
+            content:messageInput.value,
+            senderRole:sessionStorage.getItem('role')
+        })
+    })
+}
 
 
 function startGame(){

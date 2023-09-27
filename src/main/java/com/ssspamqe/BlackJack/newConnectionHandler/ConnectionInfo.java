@@ -1,5 +1,7 @@
 package com.ssspamqe.BlackJack.newConnectionHandler;
 
+import java.util.List;
+
 public class ConnectionInfo {
 
     private String username;
@@ -8,6 +10,11 @@ public class ConnectionInfo {
     public ConnectionInfo(String username, String role) {
         this.username = username;
         this.role = role;
+    }
+
+    public ConnectionInfo(List<String> data){
+        this.username = data.get(0);
+        this.role = data.get(1);
     }
 
     @Override
