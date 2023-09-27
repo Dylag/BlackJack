@@ -2,17 +2,17 @@ package com.ssspamqe.BlackJack.newConnectionHandler;
 
 import java.util.List;
 
-public class ConnectionInfo {
+public class UserInfo {
 
     private String username;
     private String role;
 
-    public ConnectionInfo(String username, String role) {
+    public UserInfo(String username, String role) {
         this.username = username;
         this.role = role;
     }
 
-    public ConnectionInfo(List<String> data){
+    public UserInfo(List<String> data){
         this.username = data.get(0);
         this.role = data.get(1);
     }

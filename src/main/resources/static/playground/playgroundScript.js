@@ -6,6 +6,8 @@ let chat_list = document.getElementById('chat_list')
 
 username_label.textContent = sessionStorage.getItem('username')
 
+let username = sessionStorage.getItem('username')
+let role = sessionStorage.getItem('role')
 
 const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/blackJack'
@@ -16,19 +18,17 @@ stompClient.onConnect = (frame) =>{
 
     stompClient.subscribe('/output/connections',newConnectionObject=>{
 
-        console.log("got list")
-        alert("got list")
-        // let obj = JSON.parse(newConnectionObject.body)
-        // console.log("Got new connection list: "+obj.body)
-        //
-        // let newUserItem = document.createElement('li')
-        // newUserItem.textContent = `${obj.username}[${obj.role}]`
-        // onlinePlayer_list.appendChild(newUserItem)
-    },{
-        simpSessionAttributes:JSON.stringify({
-            username:sessionStorage.getItem('username'),
-            role:sessionStorage.getItem('role')
-        })
+        let obj = JSON.parse(newConnectionObject.body)
+        console.log("Got new connection list: "+obj.body)
+
+        onlinePlayer_list.innerHTML = ''
+
+        for(let i of obj){
+            let newUserItem = document.createElement('li')
+            newUserItem.textContent = `${i.username}[${i.role}]`
+            onlinePlayer_list.appendChild(newUserItem)
+        }
+
     })
 
 
@@ -44,32 +44,43 @@ stompClient.onConnect = (frame) =>{
 
         chat_list.appendChild(newLi)
 
-
-
-    },{
-        simpSessionAttributes:JSON.stringify({
-            username:sessionStorage.getItem('username'),
-            role:sessionStorage.getItem('role')
-        })
     })
 
-
-
-
-    // stompClient.publish({
-    //     destination:'/input/newConnection',
-    //     body: JSON.stringify([{
-    //         username:sessionStorage.getItem('username'),
-    //         role:sessionStorage.getItem('role')
-    //     }])
-    // })
+    stompClient.publish({
+        destination:'/input/connectionHandler',
+        body: JSON.stringify({
+                userInfo:{
+                    username:username,
+                    role:role
+                },
+                state: 'connecting'
+            }
+        )
+    })
 }
 window.onbeforeunload = ()=>{
-    stompClient.unsubscribe(0)
+    stompClient.publish({
+        destination: '/input/connectionHandler',
+        body : JSON.stringify({
+            userInfo:{
+                username:username,
+                role:role
+            },
+            state: 'disconnecting'
+        })
+    })
     stompClient.deactivate()
 }
 
 stompClient.activate()
+
+
+
+
+
+
+
+
 
 
 function sendMessage(){
