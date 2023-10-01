@@ -9,6 +9,8 @@ username_label.textContent = sessionStorage.getItem('username')
 let username = sessionStorage.getItem('username')
 let role = sessionStorage.getItem('role')
 
+let ready = false;
+
 const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/blackJack'
 });
@@ -77,13 +79,25 @@ function sendMessage() {
     stompClient.publish({
         destination: "/input/chat",
         body: JSON.stringify({
-            sender: sessionStorage.getItem('username'),
+            sender: username,
             content: messageInput.value,
-            senderRole: sessionStorage.getItem('role')
+            senderRole: role
         })
     })
 }
 
+function changeReadyState(){
+    ready = !ready
+    stompClient.publish({
+        destination: "/input/onlinePlayers",
+        body: JSON.stringify({
+            username: username,
+            role: role,
+            ready:ready,
+            action:"CHANGING_READY_STATE"
+        })
+    })
+}
 
 function startGame() {
     fetch("http://localhost:8080/blackJack/playground/start", {
