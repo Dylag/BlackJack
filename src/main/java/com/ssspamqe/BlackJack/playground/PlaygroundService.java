@@ -79,15 +79,10 @@ public class PlaygroundService {
 
         if(ACount==0)
             return res;
-        //ДО ПОСТКОММУНАРКИ 15 МИНУУУУУУТ
-
         if(res + 10 + ACount <= 21)
             return res + 10 + ACount;
         else
             return res+ACount;
-
-        //5 МИНУТ ААААААААААААААААААААААААААААААААААА
-        //AAAAAAAAAAAAAAAAAAAA КРУТААААААААААААААААААААААААА 45 минут на репите уже (всем спокойной ночи)
     }
 
     int getPoints(String s){

@@ -23,7 +23,6 @@ public class PlaygroundController {
     }
 
 
-    ///ЙОООО через 2 часа посткоммунарка у сквора ВЫХОДИТ ЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕ УРААААА
     @GetMapping(path = "/takeCard")
     public ArrayList<String> takeCard(){
         //TODO add started game checker

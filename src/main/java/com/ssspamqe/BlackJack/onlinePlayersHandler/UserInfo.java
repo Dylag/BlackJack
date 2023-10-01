@@ -1,4 +1,6 @@
-package com.ssspamqe.BlackJack.newConnectionHandler;
+package com.ssspamqe.BlackJack.onlinePlayersHandler;
+
+import com.ssspamqe.BlackJack.auth.User;
 
 import java.util.List;
 
@@ -6,21 +8,30 @@ public class UserInfo {
 
     private String username;
     private String role;
+    private boolean ready = false;
+    public UserInfo() {
+    }
 
     public UserInfo(String username, String role) {
         this.username = username;
         this.role = role;
     }
 
-    public UserInfo(List<String> data){
+    public UserInfo(List<String> data) {
         this.username = data.get(0);
         this.role = data.get(1);
     }
 
-    @Override
-    public String toString(){
-        return username + " "+ role;
+    public void changeReady() {
+        ready = !ready;
     }
+
+
+    @Override
+    public String toString() {
+        return username + " " + role;
+    }
+
 
     public String getUsername() {
         return username;
@@ -36,5 +47,13 @@ public class UserInfo {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
     }
 }

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 public class EndGameResponse {
 
     private String winner;
-
-
     private ArrayList<String> dealerDeck;
 
     public EndGameResponse(String winner, ArrayList<String> dealerDeck) {

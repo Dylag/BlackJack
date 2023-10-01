@@ -12,27 +12,27 @@ let role = sessionStorage.getItem('role')
 const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/blackJack'
 });
-stompClient.onConnect = (frame) =>{
+stompClient.onConnect = (frame) => {
     console.log(`connected: ${frame}`)
 
 
-    stompClient.subscribe('/output/connections',newConnectionObject=>{
+    stompClient.subscribe('/output/onlinePlayers', onlinePlayersListObj => {
 
-        let obj = JSON.parse(newConnectionObject.body)
-        console.log("Got new connection list: "+obj.body)
+        let onlinePlayers = JSON.parse(onlinePlayersListObj.body)
+        console.log("Got new connection list")
 
         onlinePlayer_list.innerHTML = ''
 
-        for(let i of obj){
+        for (let i of onlinePlayers) {
             let newUserItem = document.createElement('li')
-            newUserItem.textContent = `${i.username}[${i.role}]`
+            newUserItem.textContent = `${i.username}[${i.role}](${i.ready})`
             onlinePlayer_list.appendChild(newUserItem)
         }
 
     })
 
 
-    stompClient.subscribe("/output/chat", newMessage=>{
+    stompClient.subscribe("/output/chat", newMessage => {
         let obj = JSON.parse(newMessage.body)
 
         let senderName = obj.sender
@@ -47,26 +47,24 @@ stompClient.onConnect = (frame) =>{
     })
 
     stompClient.publish({
-        destination:'/input/connectionHandler',
+        destination: '/input/onlinePlayers',
         body: JSON.stringify({
-                userInfo:{
-                    username:username,
-                    role:role
-                },
-                state: 'connecting'
+
+                username: username,
+                role: role,
+                ready: false,
+                action: 'CONNECTING'
             }
         )
     })
 }
-window.onbeforeunload = ()=>{
+window.onbeforeunload = () => {
     stompClient.publish({
-        destination: '/input/connectionHandler',
-        body : JSON.stringify({
-            userInfo:{
-                username:username,
-                role:role
-            },
-            state: 'disconnecting'
+        destination: '/input/onlinePlayers',
+        body: JSON.stringify({
+            username: username,
+            role: role,
+            action:'DISCONNECTING'
         })
     })
     stompClient.deactivate()
@@ -75,29 +73,21 @@ window.onbeforeunload = ()=>{
 stompClient.activate()
 
 
-
-
-
-
-
-
-
-
-function sendMessage(){
+function sendMessage() {
     stompClient.publish({
-        destination:"/input/chat",
+        destination: "/input/chat",
         body: JSON.stringify({
-            sender:sessionStorage.getItem('username'),
-            content:messageInput.value,
-            senderRole:sessionStorage.getItem('role')
+            sender: sessionStorage.getItem('username'),
+            content: messageInput.value,
+            senderRole: sessionStorage.getItem('role')
         })
     })
 }
 
 
-function startGame(){
-    fetch("http://localhost:8080/blackJack/playground/start",{
-        method:"GET"
+function startGame() {
+    fetch("http://localhost:8080/blackJack/playground/start", {
+        method: "GET"
     })
         .then(r => r.json())
         .then(r => {
@@ -106,17 +96,17 @@ function startGame(){
         })
 }
 
-function takeCard(){
-    fetch("http://localhost:8080/blackJack/playground/takeCard",{
-        method:"GET"
+function takeCard() {
+    fetch("http://localhost:8080/blackJack/playground/takeCard", {
+        method: "GET"
     })
         .then(r => r.json())
         .then(r => playerCards_header.textContent = r)
 }
 
-function finishGame(){
-    fetch("http://localhost:8080/blackJack/playground/finishGame",{
-        method:"GET"
+function finishGame() {
+    fetch("http://localhost:8080/blackJack/playground/finishGame", {
+        method: "GET"
     })
         .then(r => r.json())
         .then(r => {
@@ -126,7 +116,7 @@ function finishGame(){
         })
 }
 
-function changeGameState(){
+function changeGameState() {
     takeCard_btn.disabled = !takeCard_btn.disabled;
     finishGame_btn.disabled = !finishGame_btn.disabled;
     startGame_btn.disabled = !startGame_btn.disabled;
