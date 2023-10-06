@@ -1,5 +1,9 @@
 package com.ssspamqe.BlackJack.playground;
 
+import com.ssspamqe.BlackJack.onlinePlayersHandler.UserInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Service;
 
 
@@ -8,13 +12,30 @@ import java.util.*;
 @Service
 public class PlaygroundService {
 
+    @Autowired
+    private static SimpMessagingTemplate messagingTemplate;
 
 
-    Queue<String> cards;
-    ArrayList<String> playerDeck;
-    ArrayList<String> dealerDeck;
+    private static Map<String,ArrayList<String>> playersDecks = new HashMap<>();
+    private static ArrayList<String> dealerDeck = new ArrayList<>();
+    private static String dealerUsername;
 
-    ArrayList<String> startGame(){
+
+    private static Queue<String> cards;
+    private static ArrayList<String> playerDeck;
+
+    public static void startGame(Map<String, UserInfo> onlineUsers){
+
+
+
+
+        for (var i : onlineUsers.entrySet()){
+            if(i.getValue().getRole().equals("player"))
+                playersDecks.put(i.getKey(),new ArrayList<String>());
+            else
+                dealerUsername = i.getKey();
+        }
+
         cards = new ArrayDeque<String>();
         ArrayList<String> cardSet = new ArrayList<>();
         for(int i =0;i<4;i++)
@@ -24,26 +45,27 @@ public class PlaygroundService {
 
         cardSet.forEach(i->cards.offer(i));
 
-
-        playerDeck = new ArrayList<String>();
-        playerDeck.add(cards.poll());
-        playerDeck.add(cards.poll());
-
-        dealerDeck = new ArrayList<String>();
         dealerDeck.add(cards.poll());
         dealerDeck.add(cards.poll());
 
-        return playerDeck;
+        for(var i:playersDecks.entrySet())
+        {
+            i.getValue().add(cards.poll());
+            i.getValue().add(cards.poll());
+        }
+
+        messagingTemplate.convertAndSend("");
+
     }
 
-    ArrayList<String> takeCard(){
+    static ArrayList<String> takeCard(){
         //TODO add card availability checker
         playerDeck.add(cards.poll());
         return playerDeck;
     }
 
 
-    EndGameResponse finishGame(){
+    static EndGameResponse finishGame(){
         int dealerPoints = getPointsOfList(dealerDeck);
         int playerPoints = getPointsOfList(playerDeck);
 
@@ -68,7 +90,7 @@ public class PlaygroundService {
     }
 
 
-    int getPointsOfList(ArrayList<String> deck){
+    static int getPointsOfList(ArrayList<String> deck){
         int res =0;
         int ACount = (int) deck.stream().filter(i -> i.equals("A")).count();
 
@@ -85,7 +107,7 @@ public class PlaygroundService {
             return res+ACount;
     }
 
-    int getPoints(String s){
+    static int getPoints(String s){
         try{
             return Integer.parseInt(s);
         } catch (Exception ex){
@@ -93,12 +115,11 @@ public class PlaygroundService {
         }
     }
 
-    ArrayList<String> getPlayerDeck(){
+    static ArrayList<String> getPlayerDeck(){
         return playerDeck;
     }
 
-    ArrayList<String> getDealerDeck(){
+    static ArrayList<String> getDealerDeck(){
         return dealerDeck;
     }
-
 }

@@ -2,6 +2,7 @@ package com.ssspamqe.BlackJack.onlinePlayersHandler;
 
 import com.ssspamqe.BlackJack.auth.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserInfo {
@@ -9,6 +10,9 @@ public class UserInfo {
     private String username;
     private String role;
     private boolean ready = false;
+
+    private ArrayList<String> deck = new ArrayList<String>();
+
     public UserInfo() {
     }
 

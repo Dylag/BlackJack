@@ -9,30 +9,21 @@ import java.util.ArrayList;
 @RestController
 @RequestMapping(path = "/blackJack/playground")
 public class PlaygroundController {
-
-
-
-    private PlaygroundService playgroundService;
-    public PlaygroundController(PlaygroundService playgroundService) {
-        this.playgroundService = playgroundService;
-    }
-
-    @GetMapping(path = "/start")
-    public ArrayList<String> startGame(){
-        return playgroundService.startGame();
-    }
-
-
-    @GetMapping(path = "/takeCard")
-    public ArrayList<String> takeCard(){
-        //TODO add started game checker
-        return playgroundService.takeCard();
-    }
-
-    @GetMapping(path = "/finishGame")
-    public EndGameResponse finishGame(){
-        // change it, cuz response must be built in controller layer
-        return playgroundService.finishGame();
-    }
-
+//    @GetMapping(path = "/start")
+//    public ArrayList<String> startGame(){
+//
+//        return PlaygroundService.startGame();
+//    }
+//
+//    @GetMapping(path = "/takeCard")
+//    public ArrayList<String> takeCard(){
+//        //TODO add started game checker
+//        return PlaygroundService.takeCard();
+//    }
+//
+//    @GetMapping(path = "/finishGame")
+//    public EndGameResponse finishGame(){
+//        // change it, cuz response must be built in controller layer
+//        return PlaygroundService.finishGame();
+//    }
 }
