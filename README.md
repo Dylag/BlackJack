@@ -1,5 +1,5 @@
 # BlackJack
-a web black jack game
+A web black jack game
 
 Here we have a web BlackJack version using websockets. 
 
